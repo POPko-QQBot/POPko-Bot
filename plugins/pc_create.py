@@ -1,12 +1,19 @@
 import random
+import re
 from . import dice
 
-def pcCreate(pcType):
-    if pcType == "/DND5" or pcType == "/dnd5":
+def pcCreate(msg):
+    match = re.match(r'([dndcocDNDCOC]+)( )?(d+)?')
+    pcType = match.group(1)
+    try:
+        times = int(match.group(3))
+    except:
+        times = 1
+    if pcType == "DND" or pcType == "dnd":
         pc_list = []
         result = f"的英雄作成如下："
         sets = 0
-        while sets < 5:
+        while sets < times:
             status_list = []
             status_sum = 0
             for st in range(0,6):
@@ -29,7 +36,7 @@ def pcCreate(pcType):
         pc_list = []
         result = f"的调查员作成如下："
         sets = 0
-        while sets < 3:
+        while sets < times:
             sets = sets + 1
             status_list = []
             STR = int(dice.dice_roll("3d6")[0])*5
