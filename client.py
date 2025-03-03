@@ -10,7 +10,7 @@ import re
 import time
 import json
 
-test_config = read(os.path.join(os.path.dirname(__file__), "config.yaml"))
+config = read(os.path.join(os.path.dirname(__file__), "config.yaml"))
 
 _log = logging.get_logger()
 
@@ -51,29 +51,7 @@ class MyClient(botpy.Client):
         member_openid = message.author.member_openid
         print("[Info] bot 收到消息：" + message.content)
 
-        if msg == f"我喜欢你":
-            messageResult = await message._api.post_group_message(
-                group_openid=message.group_openid,
-                msg_type=0,
-                msg_id=message.id,
-                content=f"我也喜欢你")
-
-            # 资源上传后，会得到Media，用于发送消息
-            await message._api.post_group_message(
-                group_openid=message.group_openid,
-                msg_type=7,
-                msg_id=message.id,
-                media=messageResult,
-                content=f"{result}"
-            )
-
-        elif msg.startswith("/test"):
-            messageResult = await message._api.post_group_message(
-                group_openid=message.group_openid,
-                msg_type=0,
-                msg_id=message.id,
-                content=f"\nBoost & Magnum, ready fight!!!")
-        elif msg.startswith("dr"):
+        if msg.startswith("dr"):
             result = dice.dnd_roll(msg)
             messageResult = await message._api.post_group_message(
                 group_openid=message.group_openid,
@@ -112,7 +90,7 @@ class MyClient(botpy.Client):
                     msg_id=message.id,
                     content=f"{result}")
 
-        elif msg == f"/dnd5" or msg == f"/DND5":
+        elif msg.startswith("/dnd") or msg.startswith("/DND"):
             result = pc_create.pcCreate(msg)
             messageResult = await message._api.post_group_message(
                 group_openid=message.group_openid,
@@ -120,7 +98,7 @@ class MyClient(botpy.Client):
                 msg_id=message.id,
                 content=f"{result}")
 
-        elif msg == f"/coc3" or msg == f"/COC3":
+        elif msg.startswith("/coc") or msg.startswith("/COC"):
             result = pc_create.pcCreate(msg)
             messageResult = await message._api.post_group_message(
                 group_openid=message.group_openid,
@@ -186,4 +164,4 @@ if __name__ == "__main__":
     # 通过kwargs，设置需要监听的事件通道
     intents = botpy.Intents(public_messages=True)
     client = MyClient(intents=intents, is_sandbox=True)
-    client.run(appid=test_config["appid"], secret=test_config["secret"])
+    client.run(appid=config["appid"], secret=config["secret"])
