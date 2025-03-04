@@ -3,30 +3,26 @@ import re
 from . import dice
 
 def pcCreate(msg):
-    match = re.match(r'([dndcocDNDCOC]+)( )?(d+)?')
+    match = re.match(r'([/dndcocDNDCOC]+)( )?(\d+)?',msg)
     pcType = match.group(1)
     try:
         times = int(match.group(3))
     except:
         times = 1
+    sets = 0
     if pcType == "DND" or pcType == "dnd":
         pc_list = []
         result = f"的英雄作成如下："
-        sets = 0
         while sets < times:
             status_list = []
             status_sum = 0
-            for st in range(0,6):
+            for st in range(0,6):#对六维重复
                 status_temp_list = []
-                for x in range(0,4):
+                for x in range(0,4):#骰4个D6骰
                     status_temp = random.randint(1,6)
                     status_temp_list.append(status_temp)
-                for a in range(0,len(status_temp_list)):
-                    for b in range(0,len(status_temp_list)-a-1):
-                        if status_temp_list[b] <= status_temp_list[b+1]:
-                            status_temp_list[b], status_temp_list[b+1] = status_temp_list[b+1], status_temp_list[b]
-                #print(status_temp_list)
-                status = status_temp_list[0] + status_temp_list[1] + status_temp_list[2]
+                status_temp_list.sort(reverse=True)
+                status = status_temp_list[0] + status_temp_list[1] + status_temp_list[2]#取其中最大的3个值相加
                 status_list.append(status)
                 status_sum = status_sum + status
             result = f"{result}\n力量:{status_list[0]} 体质:{status_list[1]} 敏捷:{status_list[2]} 智力:{status_list[3]} 感知:{status_list[4]} 魅力:{status_list[5]} 共计:{status_sum}"
@@ -35,7 +31,6 @@ def pcCreate(msg):
     else:
         pc_list = []
         result = f"的调查员作成如下："
-        sets = 0
         while sets < times:
             sets = sets + 1
             status_list = []
